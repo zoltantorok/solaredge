@@ -1,40 +1,12 @@
 # Solaredge
-API wrapper for Solaredge monitoring service.
+Using API wrapper for Solaredge monitoring service from bertouttier/solaredge.
 
 See https://www.solaredge.com/sites/default/files/se_monitoring_api.pdf
 
-## Create a new connection by supplying your Solaredge API key
-```
-s = solaredge.Solaredge("APIKEY")
-```
-
-## API Requests
-11 API requests are supported. The methods return the parsed JSON response as a dict.
-
-```
-def get_list(self, size=100, startIndex=0, searchText="", sortProperty="", sortOrder='ASC', status='Active,Pending'):
-
-def get_details(self, site_id):
-
-def get_dataPeriod(self, site_id):
-
-def get_energy(self, site_id, startDate, endDate, timeUnit='DAY'):
-
-def get_timeFrameEnergy(self, site_id, startDate, endDate, timeUnit='DAY'):
-
-def get_power(self, site_id, startTime, endTime):
-
-def get_overview(self, site_id):
-
-def get_powerDetails(self, site_id, startTime, endTime, meters=None):
-
-def get_energyDetails(self, site_id, startTime, endTime, meters=None, timeUnit="DAY"):
-
-def get_currentPowerFlow(self, site_id):
-
-def get_storageData(self, site_id, startTime, endTime, serials=None):
-```
-
-## TODO
-* Add support for bulk requests
-* Add API documentation
+I have a photovoltaic system with a Solaredge inverter but currently without a battery.
+I would like to estimate how much money I could save if I installed a battery with a certain capacity.
+The aim of this repository is to develop python tools which allow one to
+* read out all relevant energy data from the inverter for a certain time period
+* visualise the energy data
+* simulate the existence of a battery with a given capacity (currently ideal battery, charging and discharging losses will follow)
+* calculate energy costs (next step)
