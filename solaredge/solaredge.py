@@ -1,7 +1,7 @@
 import requests
 import datetime as dt
 from functools import wraps
-import pytz
+#import pytz
 import numbers
 
 __title__ = "solaredge"
