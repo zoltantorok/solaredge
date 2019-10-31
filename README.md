@@ -8,5 +8,5 @@ I would like to estimate how much money I could save if I installed a battery wi
 The aim of this repository is to develop python tools which allow one to
 * read out all relevant energy data from the inverter for a certain time period
 * visualise the energy data
-* simulate the existence of a battery with a given capacity (currently ideal battery, charging and discharging losses will follow, limiting the maximum charging power is also missing)
+* simulate the existence of a battery with a given capacity (charging and discharging losses, limitation of the maximum charging and discharging powers)
 * calculate energy costs (next step)
