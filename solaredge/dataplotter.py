@@ -3,7 +3,6 @@ Created on 28.10.2019
 
 @author: Zoli
 '''
-import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
@@ -18,7 +17,7 @@ class DataPlotter(object):
         Constructor
         '''
         
-    def plotDetailedEnergyData(self, energy, labels, figure = 1, show = True):
+    def plotDetailedEnergyData(self, energy, yLabel, labels, figure = 1, show = True):
         plt.figure(figure)
         plt.gca().xaxis_date()
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y %H:%M'))
@@ -27,7 +26,7 @@ class DataPlotter(object):
             plt.plot(list(energy.keys()), [e[i] for e in energy.values()], label=labels[i], color=colors[labels[i]])
 
         plt.gcf().autofmt_xdate()
-        plt.ylabel('Energy (Wh)')
+        plt.ylabel(yLabel)
         plt.xlabel('Time')
         plt.legend(loc='upper left', frameon=True)
         if show:

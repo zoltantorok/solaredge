@@ -10,20 +10,19 @@ class BatteryEstimator(object):
     '''
 
 
-    def __init__(self):
+    def __init__(self, battery):
         '''
         Constructor
         '''
+        self.battery = battery
     
-    def accumulateFeedInEnergy(self, energy, energyTypes, batteryCapacity):
+    def accumulateFeedInEnergy(self, energy, energyTypes):
         '''
         Accumulate energy fed into the electricity grid and thereby reduce the purchased energy, once the consumed energy exceeds the produced one
         energy: detailed energy measurements (Wh). Data type: dictionary (key: datetime, value: tuple of 6 - see energyTypes)
         energyTypes: type of energy stored in energy tuple
         batteryCapacity: (Wh)
         '''
-        batteryChargeLevel = 0
-        oldBatteryChargeLevel = 0
         accumulatedEnergy = {}
         
         timestamps = list(energy.keys())
@@ -33,34 +32,26 @@ class BatteryEstimator(object):
             consumption = value[energyTypes.index('Consumption')]
             production = value[energyTypes.index('Production')]
             
-            batteryChargeLevel = batteryChargeLevel + production - consumption
+            oldBatteryEnergy = self.battery.energy
+
+            returnedEnergy = self.battery.chargeDischargeBattery(production - consumption)
             
-            if batteryChargeLevel > batteryCapacity:
-                overflowEnergy = batteryChargeLevel - batteryCapacity
-                batteryChargeLevel = batteryCapacity
-                feedIn = overflowEnergy
+            if returnedEnergy >= 0:
+                feedIn = returnedEnergy
                 purchased = 0
                 selfConsumption = consumption
-            elif batteryChargeLevel < 0:
-                underflowEnergy = -batteryChargeLevel
-                batteryChargeLevel = 0
-                feedIn = 0
-                purchased = underflowEnergy
-                selfConsumption = 0
             else:
                 feedIn = 0
-                purchased = 0
-                selfConsumption = consumption
+                purchased = -returnedEnergy
+                selfConsumption = 0
             
             valueList = list(value)
             
             valueList[energyTypes.index('FeedIn')] = feedIn 
             valueList[energyTypes.index('Purchased')] = purchased 
             valueList[energyTypes.index('SelfConsumption')] = selfConsumption
-            valueList[energyTypes.index('Accumulated')] = batteryChargeLevel - oldBatteryChargeLevel
+            valueList[energyTypes.index('Accumulated')] = self.battery.energy - oldBatteryEnergy
 
-            oldBatteryChargeLevel = batteryChargeLevel
-            
             accumulatedEnergy[timestamp] = tuple(valueList)
         
         return accumulatedEnergy

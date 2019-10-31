@@ -8,6 +8,7 @@ import datareadout
 import solaredge
 import json
 import batteryestimator
+import battery
 from dataplotter import DataPlotter
 
 class BatteryEstimatorUnitTest(unittest.TestCase):
@@ -27,10 +28,10 @@ class BatteryEstimatorUnitTest(unittest.TestCase):
         pass
 
 
-    def testBatteryEstimator_AttachBattery_EnergyChecksPass(self):
-        batteryEstimator = batteryestimator.BatteryEstimator()
-        batteryCapacity = 9000 # Wh
-        newEnergy = batteryEstimator.accumulateFeedInEnergy(self.testData, self.energyTypes, batteryCapacity)
+    def testBatteryEstimator_AttachIdealBattery_EnergyChecksPass(self):
+        idealBattery = battery.Battery(capacity=9300, chargingLossPercent=0, dischargingLossPercent=0, maxChargingPower=5000, maxDischargingPower=7000)
+        batteryEstimator = batteryestimator.BatteryEstimator(idealBattery)
+        newEnergy = batteryEstimator.accumulateFeedInEnergy(self.testData, self.energyTypes)
         
         oldSums = [sum(x) for x in zip(*self.testData.values())]
         newSums = [sum(x) for x in zip(*newEnergy.values())]

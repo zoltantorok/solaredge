@@ -9,6 +9,7 @@ import datareadout
 from dataplotter import DataPlotter
 import sys
 import batteryestimator
+import battery
 
 class IntegrationTest(unittest.TestCase):
     site_token = ''
@@ -39,15 +40,16 @@ class IntegrationTest(unittest.TestCase):
         print('Header: ' + ' '.join(readout.meterTypes))
         energy = readout.getDetailedEnergy(self.startDate, self.endDate)
         print(energy)
+        energyLabel = 'Energy * 15 minutes (Wh)'
         plotter = DataPlotter()
-        plotter.plotDetailedEnergyData(energy, readout.meterTypes, figure=1, show=False)
+        plotter.plotDetailedEnergyData(energy, energyLabel, readout.meterTypes, figure=1, show=False)
 
         # Estimate energy with a battery
-        batteryEstimator = batteryestimator.BatteryEstimator()
-        batteryCapacity = 9000 # Wh
-        newEnergy = batteryEstimator.accumulateFeedInEnergy(energy, readout.meterTypes, batteryCapacity)
+        realBattery = battery.Battery(capacity=9300, chargingLossPercent=1, dischargingLossPercent=1, maxChargingPower=5000, maxDischargingPower=7000)
+        batteryEstimator = batteryestimator.BatteryEstimator(realBattery)
+        newEnergy = batteryEstimator.accumulateFeedInEnergy(energy, readout.meterTypes)
         plotter = DataPlotter()
-        plotter.plotDetailedEnergyData(newEnergy, readout.meterTypes, figure=2, show=True)
+        plotter.plotDetailedEnergyData(newEnergy, energyLabel, readout.meterTypes, figure=2, show=True)
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
