@@ -4,15 +4,14 @@ Created on 29.10.2019
 @author: Zoli
 '''
 import unittest
-import datareadout
+from solaredge import datareadout
 import solaredge
 import json
 import batteryestimator
 import battery
-from dataplotter import DataPlotter
 
 class BatteryEstimatorUnitTest(unittest.TestCase):
-    testDataDetailedEnergy = 'testDetailedEnergyString.txt'
+    testDataDetailedEnergy = '../solaredge/testDetailedEnergyString.txt'
 
     def setUp(self):
         dataReader = datareadout.DataReadout(solaredge.Solaredge(''), 0)

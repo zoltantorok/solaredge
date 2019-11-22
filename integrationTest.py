@@ -5,11 +5,11 @@ Created on 27.10.2019
 '''
 import unittest
 import solaredge
-import datareadout
-from dataplotter import DataPlotter
+from solaredge import datareadout
+from visualise import dataplotter
 import sys
-import batteryestimator
-import battery
+from battery import batteryestimator
+from battery import battery
 
 class IntegrationTest(unittest.TestCase):
     site_token = ''
@@ -19,7 +19,7 @@ class IntegrationTest(unittest.TestCase):
         self.s = solaredge.Solaredge(self.site_token)
         self.startDate = '2019-10-23 00:00:00'
         #self.startDate = '2019-10-28 16:30:00'
-        self.endDate ='2019-10-30 17:00:00'
+        self.endDate ='2019-11-22 18:45:00'
 
 
     def tearDown(self):
@@ -41,14 +41,14 @@ class IntegrationTest(unittest.TestCase):
         energy = readout.getDetailedEnergy(self.startDate, self.endDate)
         print(energy)
         energyLabel = 'Energy * 15 minutes (Wh)'
-        plotter = DataPlotter()
+        plotter = dataplotter.DataPlotter()
         plotter.plotDetailedEnergyData(energy, energyLabel, readout.meterTypes, figure=1, show=False)
 
         # Estimate energy with a battery
         realBattery = battery.Battery(capacity=9300, chargingLossPercent=1, dischargingLossPercent=1, maxChargingPower=5000, maxDischargingPower=7000)
         batteryEstimator = batteryestimator.BatteryEstimator(realBattery)
         newEnergy = batteryEstimator.accumulateFeedInEnergy(energy, readout.meterTypes)
-        plotter = DataPlotter()
+        plotter = dataplotter.DataPlotter()
         plotter.plotDetailedEnergyData(newEnergy, energyLabel, readout.meterTypes, figure=2, show=True)
 
 if __name__ == "__main__":

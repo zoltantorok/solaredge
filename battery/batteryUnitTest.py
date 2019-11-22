@@ -6,7 +6,7 @@ Created on 31.10.2019
 import unittest
 import battery
 
-class Test(unittest.TestCase):
+class BatteryUnitTest(unittest.TestCase):
 
 
     def setUp(self):

@@ -86,6 +86,28 @@ class EnergyCostUnitTest(unittest.TestCase):
 
         self.assertEqual(energyCostLow, cost.getEnergyCost(self.validTestOnEdge2))
 
+        self.lowTarifStart1 = datetime.datetime(year = 2019, month = 11, day = 21, hour = 0, minute = 0, second = 0)
+        self.assertEqual(energyCostLow, cost.getEnergyCost(self.lowTarifStart1))
+
+        self.lowTarifEnd1 = datetime.datetime(year = 2019, month = 11, day = 21, hour = 6, minute = 59, second = 59)
+        self.assertEqual(energyCostLow, cost.getEnergyCost(self.lowTarifEnd1))
+
+        self.highTarifStart = datetime.datetime(year = 2019, month = 11, day = 21, hour = 7, minute = 0, second = 0)
+        self.assertEqual(energyCostHigh, cost.getEnergyCost(self.highTarifStart))
+
+        self.highTarifEnd = datetime.datetime(year = 2019, month = 11, day = 21, hour = 18, minute = 59, second = 59)
+        self.assertEqual(energyCostHigh, cost.getEnergyCost(self.highTarifEnd))
+
+        self.lowTarifStart2 = datetime.datetime(year = 2019, month = 11, day = 21, hour = 19, minute = 0, second = 0)
+        self.assertEqual(energyCostLow, cost.getEnergyCost(self.lowTarifStart2))
+
+        self.lowTarifEnd2 = datetime.datetime(year = 2019, month = 11, day = 21, hour = 23, minute = 59, second = 59)
+        self.assertEqual(energyCostLow, cost.getEnergyCost(self.lowTarifEnd2))
+
+        for h in range(0, 23):
+            self.lowTarifWeekend = datetime.datetime(year = 2019, month = 11, day = 24, hour = h, minute = 0, second = 0)
+            self.assertEqual(energyCostLow, cost.getEnergyCost(self.lowTarifWeekend))
+            
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
