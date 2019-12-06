@@ -37,19 +37,19 @@ class IntegrationTest(unittest.TestCase):
     def testDetailedEnergyReadout(self):
         readout = datareadout.DataReadout(self.s, self.site_id)
         
-        print('Header: ' + ' '.join(readout.meterTypes))
+        print('Header: ' + ' '.join(datareadout.DataReadout.energyTypes()))
         energy = readout.getDetailedEnergy(self.startDate, self.endDate)
         print(energy)
         energyLabel = 'Energy * 15 minutes (Wh)'
         plotter = dataplotter.DataPlotter()
-        plotter.plotDetailedEnergyData(energy, energyLabel, readout.meterTypes, figure=1, show=False)
+        plotter.plotDetailedEnergyData(energy, energyLabel, datareadout.DataReadout.energyTypes(), figure=1, show=False)
 
         # Estimate energy with a battery
         realBattery = battery.Battery(capacity=9300, chargingLossPercent=1, dischargingLossPercent=1, maxChargingPower=5000, maxDischargingPower=7000)
         batteryEstimator = batteryestimator.BatteryEstimator(realBattery)
-        newEnergy = batteryEstimator.accumulateFeedInEnergy(energy, readout.meterTypes)
+        newEnergy = batteryEstimator.accumulateFeedInEnergy(energy, datareadout.DataReadout.energyTypes())
         plotter = dataplotter.DataPlotter()
-        plotter.plotDetailedEnergyData(newEnergy, energyLabel, readout.meterTypes, figure=2, show=True)
+        plotter.plotDetailedEnergyData(newEnergy, energyLabel, datareadout.DataReadout.energyTypes(), figure=2, show=True)
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:

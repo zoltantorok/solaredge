@@ -10,6 +10,9 @@ class DataReadout(object):
     '''
     classdocs
     '''
+    shortFormat = '%Y-%m-%d'
+    extFormat = shortFormat + ' %H:%M:%S'
+    timeUnit = 'QUARTER_OF_AN_HOUR'
 
     def __init__(self, solaredge, site_id):
         '''
@@ -17,12 +20,8 @@ class DataReadout(object):
         '''
         self.solaredge = solaredge
         self.site_id = site_id
-        self.timeUnit = 'QUARTER_OF_AN_HOUR'
         self.timeUnitTimeDelta = timedelta(minutes=15)  
-        self.shortFormat = '%Y-%m-%d'
-        self.extFormat = self.shortFormat + ' %H:%M:%S'
         self.timeLimitForMultiReadout = timedelta(weeks=1)
-        self.meterTypes = ['Consumption', 'SelfConsumption', 'FeedIn', 'Purchased', 'Production', 'Accumulated']
 
     
     def getDetailedEnergy(self, startDate, endDate):
@@ -56,11 +55,16 @@ class DataReadout(object):
             raise RuntimeError('readDetailedEnergy expects datetime.date objects')
         energy = self.solaredge.get_energyDetails(self.site_id, self.formatDate(startDate), self.formatDate(endDate), None, self.timeUnit)
         return self.convertEnergyData(energy)
-    
-    def convertEnergyData(self, seEnergy):
+
+    @staticmethod
+    def energyTypes():
+        return ['Consumption', 'SelfConsumption', 'FeedIn', 'Purchased', 'Production', 'Accumulated']
+
+    @staticmethod
+    def convertEnergyData(seEnergy):
         # expecting: {'energyDetails': {'timeUnit': 'QUARTER_OF_AN_HOUR', 'unit': 'Wh', 'meters': [{'type': 'SelfConsumption', 'values': [{'date': '2019-10-27 12:00:00', 'value': 401.0}, {'date': '2019-10-27 12:15:00'
         energyDetails = seEnergy['energyDetails']
-        if energyDetails['timeUnit'] != self.timeUnit:
+        if energyDetails['timeUnit'] != DataReadout.timeUnit:
             raise RuntimeError('Unexpected time unit received for detailed energy: ' + energyDetails['timeUnit'])
         
         energy = {}
@@ -71,7 +75,7 @@ class DataReadout(object):
             meterValues = meter['values']
             
             for value in meterValues:
-                timestamp = self.parseDate(value['date'])
+                timestamp = DataReadout.parseDate(value['date'])
                 if 'value' in value:
                     val = value['value']
                 else:
@@ -81,18 +85,20 @@ class DataReadout(object):
                     energy[timestamp] = (0, 0, 0, 0, 0, 0)
                 
                 entries = list(energy[timestamp])
-                entries[self.meterTypes.index(meterType)] = val
+                entries[DataReadout.energyTypes().index(meterType)] = val
                 energy[timestamp] = tuple(entries)
         return energy
     
-    def formatDate(self, date):
-        return date.strftime(self.extFormat)
+    @staticmethod
+    def formatDate(date):
+        return date.strftime(DataReadout.extFormat)
     
-    def parseDate(self, dateStr):
+    @staticmethod
+    def parseDate(dateStr):
         if ':' in dateStr:
-            startFormat = self.extFormat
+            startFormat = DataReadout.extFormat
         else:
-            startFormat = self.shortFormat
+            startFormat = DataReadout.shortFormat
         return datetime.strptime(dateStr, startFormat)
     
     

@@ -5,7 +5,6 @@ Created on 29.10.2019
 '''
 import unittest
 from solaredge import datareadout
-import solaredge
 import json
 import batteryestimator
 import battery
@@ -14,14 +13,13 @@ class BatteryEstimatorUnitTest(unittest.TestCase):
     testDataDetailedEnergy = '../solaredge/testDetailedEnergyString.txt'
 
     def setUp(self):
-        dataReader = datareadout.DataReadout(solaredge.Solaredge(''), 0)
         testDataFile = open(self.testDataDetailedEnergy, 'r')
         testDataAlmostJsonString = testDataFile.read()
         testDataFile.close()
         testDataJsonString = testDataAlmostJsonString.replace("\'", "\"")
         testData = json.loads(testDataJsonString)
-        self.testData = dataReader.convertEnergyData(testData) 
-        self.energyTypes = dataReader.meterTypes
+        self.testData = datareadout.DataReadout.convertEnergyData(testData) 
+        self.energyTypes = datareadout.DataReadout.energyTypes()
 
     def tearDown(self):
         pass
