@@ -81,10 +81,13 @@ class Battery(object):
             underflowEnergy = energy + maxDischargingEnergy # energy is negative
             energy = -maxDischargingEnergy
         
-        energy = energy * (100 + self.dischargingLossPercent) / 100.0
+        dischargingLoss = (100 + self.dischargingLossPercent) / 100.0
+        energy = energy * dischargingLoss 
         
         self.energy = self.energy + energy
         if self.energy < 0:
+            # Not accepted energy is not affected by discharging loss
+            self.energy = self.energy / dischargingLoss
             underflowEnergy = underflowEnergy + self.energy
             self.energy = 0
         

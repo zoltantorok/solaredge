@@ -127,6 +127,16 @@ class BatteryUnitTest(unittest.TestCase):
         expectedReturnedEnergy = dischargedEnergy + testBattery.maxDischargingPower / 4
         self.assertEqual(expectedReturnedEnergy, returnedEnergy)
 
+    def testBattery_dischargeRealEmptyBattery_dischargingEnergyReturned(self):
+        testBattery = battery.Battery(capacity=1000, chargingLossPercent=1, dischargingLossPercent=1, maxChargingPower=1000, maxDischargingPower=1000)
+        dischargedEnergy = -10 # Wh
+        testBatteryInitialEnergy = 0
+        testBattery.energy = testBatteryInitialEnergy
+        
+        returnedEnergy = testBattery.chargeDischargeBattery(dischargedEnergy)
+        
+        self.assertEqual(dischargedEnergy, returnedEnergy)
+
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
