@@ -39,11 +39,11 @@ class BatteryEstimator(object):
             if returnedEnergy >= 0:
                 feedIn = returnedEnergy
                 purchased = 0
-                selfConsumption = consumption
             else:
                 feedIn = 0
                 purchased = -returnedEnergy
-                selfConsumption = 0
+
+            selfConsumption = consumption + returnedEnergy - feedIn
             
             valueList = list(value)
             
