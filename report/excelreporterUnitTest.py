@@ -10,6 +10,7 @@ import excelreporter
 import os
 import datetime
 from energycost import energycost, energycostcalculator
+from battery import batteryestimator, battery
 
 class ExcelReporterUnitTest(unittest.TestCase):
     testDataDetailedEnergy = '../solaredge/testDetailedEnergyString.txt'
@@ -48,7 +49,12 @@ class ExcelReporterUnitTest(unittest.TestCase):
 
     def testAccumulatedEnergyDataWritingToExcelFile(self):
         reporter = excelreporter.ExcelReporter(self.outputTestFileBattery)
-        reporter.writeEnergyData(self.testData, self.energyTypes, self.costCalculator)
+
+        realBattery = battery.Battery(capacity=10000, chargingLossPercent=1, dischargingLossPercent=0, maxChargingPower=500000, maxDischargingPower=700000)
+        batteryEstimator = batteryestimator.BatteryEstimator(realBattery)
+        accumulatedEnergy = batteryEstimator.accumulateFeedInEnergy(self.testData, datareadout.DataReadout.energyTypes())
+
+        reporter.writeEnergyData(accumulatedEnergy, self.energyTypes, self.costCalculator)
         self.assertTrue(os.path.isfile(self.outputTestFileBattery))
 
 

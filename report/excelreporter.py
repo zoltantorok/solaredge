@@ -93,9 +93,27 @@ class ExcelReporter(object):
         worksheet['L' + str(lineNumber)] = weekCost
         worksheet['M' + str(lineNumber)] = 'currency'
         sumEnergyWeek = self.sumEnergyData(weekEnergyData)
+        self.writeSelfSufficiency(worksheet, sumEnergyWeek, energyTypes, startingCell='K', lineNumber=lineNumber + 1)
+        self.writeOwnConsumption(worksheet, sumEnergyWeek, energyTypes, startingCell='K', lineNumber=lineNumber + 2)
         for val in range(len(sumEnergyWeek)):
             worksheet['I' + str(lineNumber + val + 2)] = sumEnergyWeek[val] / 1000.0
         
+    def writeSelfSufficiency(self, worksheet, energyData, energyTypes, startingCell, lineNumber):
+        worksheet[startingCell + str(lineNumber)] = 'Self-sufficiency'
+        worksheet[chr(ord(startingCell) + 1) + str(lineNumber)] = energyData[energyTypes.index('SelfConsumption')] / energyData[energyTypes.index('Consumption')] * 100
+        worksheet[chr(ord(startingCell) + 2) + str(lineNumber)] = '%'
+
+    def writeOwnConsumption(self, worksheet, energyData, energyTypes, startingCell, lineNumber):
+        worksheet[startingCell + str(lineNumber)] = 'Own-consumption'
+        valueCell = chr(ord(startingCell) + 1) + str(lineNumber)
+        production = energyData[energyTypes.index('Production')]
+        if production > 0:
+            feedIn = energyData[energyTypes.index('FeedIn')]
+            worksheet[valueCell] = 100.0 * (production - feedIn) / production
+        else:
+            worksheet[valueCell] = 0
+        worksheet[chr(ord(startingCell) + 2) + str(lineNumber)] = '%'
+    
     def writeYearTotals(self, worksheet, year, energyData, energyTypes, costCalculator):
         yearTimestampBorders = []
         timestamps = list(energyData.keys())
@@ -123,7 +141,9 @@ class ExcelReporter(object):
         worksheet['B6'] = yearEnergySum[energyTypes.index('Purchased')] / 1000.0
         worksheet['A7'] = 'FeedIn (KWh)'
         worksheet['B7'] = yearEnergySum[energyTypes.index('FeedIn')] / 1000.0
-    
+        self.writeSelfSufficiency(worksheet, yearEnergySum, energyTypes, startingCell='A', lineNumber=8)
+        self.writeOwnConsumption(worksheet, yearEnergySum, energyTypes, startingCell='A', lineNumber=9)
+
     def getDictSubsetByKeyRange(self, dictionary, keyRange):
         outDict = {}
         for key in dictionary.keys():
