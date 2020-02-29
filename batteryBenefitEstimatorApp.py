@@ -24,6 +24,7 @@ if __name__ == '__main__':
     readout = datareadout.DataReadout(inverter, args.site_id)
     energy = readout.getDetailedEnergy(args.start_date, args.end_date)
     
+    # 2019
     energyCostHigh = 0.2526
     energyCostLow = 0.1901
     highWeekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
@@ -34,6 +35,16 @@ if __name__ == '__main__':
     cost.setDualTariffEnergyCost(energyCostHigh, highWeekdays, highTarifHours[0], highTarifHours[1], energyCostLow, validFrom, validTo)
     refund = 0.093
     cost.setConstantEnergyRefundPerKWh(refund=refund, validFrom=validFrom, validTo=validTo)
+
+    # 2020
+    energyCostHigh = 0.2570
+    energyCostLow = 0.1946
+    validFrom = datetime.datetime(year=2020, month=1, day=1)
+    validTo = datetime.datetime(year=2020, month=12, day=31, hour=23, minute=59, second=59)
+    cost.setDualTariffEnergyCost(energyCostHigh, highWeekdays, highTarifHours[0], highTarifHours[1], energyCostLow, validFrom, validTo)
+    refund = 0.1060
+    cost.setConstantEnergyRefundPerKWh(refund=refund, validFrom=validFrom, validTo=validTo)
+
     costCalculator = energycostcalculator.EnergyCostCalculator(cost)
 
     reporter = excelreporter.ExcelReporter(args.report_file)
