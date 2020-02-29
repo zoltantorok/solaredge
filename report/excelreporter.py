@@ -35,7 +35,7 @@ class ExcelReporter(object):
         
         lineNumber = 1
         lastYear = 0
-        lastWeekNumber = 0
+        lastWeekNumber = -1
         firstTimestampOfWeek = None
         
         timestamps = list(energyData.keys())
@@ -48,6 +48,9 @@ class ExcelReporter(object):
                 self.writeYearTotals(worksheet, lastYear, energyData, energyTypes, costCalculator)
                 lastYear = timestamp.year
                 worksheet = self.workBook.create_sheet(str(timestamp.year))
+                lineNumber = 1
+                lastWeekNumber = -1
+                firstTimestampOfWeek = None
             
             if timestamp.date().isocalendar()[1] != lastWeekNumber:
                 # New week

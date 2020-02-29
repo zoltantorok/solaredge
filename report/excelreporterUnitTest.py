@@ -26,18 +26,27 @@ class ExcelReporterUnitTest(unittest.TestCase):
         self.testData = datareadout.DataReadout.convertEnergyData(testData) 
         self.energyTypes = datareadout.DataReadout.energyTypes()
         
-        self.energyCostHigh = 0.2526
-        self.energyCostLow = 0.1901
-        highWeekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-        highTarifHours = (datetime.time(hour=7, minute=0), datetime.time(hour=18, minute=59, second=59))
-        validFrom = datetime.datetime(year=2019, month=1, day=1)
-        validTo = datetime.datetime(year=2019, month=12, day=31, hour=23, minute=59, second=59)
-        cost = energycost.EnergyCost()
-        cost.setDualTariffEnergyCost(self.energyCostHigh, highWeekdays, highTarifHours[0], highTarifHours[1], self.energyCostLow, validFrom, validTo)
-        self.refund = 0.093
-        cost.setConstantEnergyRefundPerKWh(refund=self.refund, validFrom=validFrom, validTo=validTo)
-        self.costCalculator = energycostcalculator.EnergyCostCalculator(cost)
+    # 2019
+    energyCostHigh = 0.2526
+    energyCostLow = 0.1901
+    highWeekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+    highTarifHours = (datetime.time(hour=7, minute=0), datetime.time(hour=18, minute=59, second=59))
+    validFrom = datetime.datetime(year=2019, month=1, day=1)
+    validTo = datetime.datetime(year=2019, month=12, day=31, hour=23, minute=59, second=59)
+    cost = energycost.EnergyCost()
+    cost.setDualTariffEnergyCost(energyCostHigh, highWeekdays, highTarifHours[0], highTarifHours[1], energyCostLow, validFrom, validTo)
+    refund = 0.093
+    cost.setConstantEnergyRefundPerKWh(refund=refund, validFrom=validFrom, validTo=validTo)
 
+    # 2020
+    energyCostHigh = 0.2570
+    energyCostLow = 0.1946
+    validFrom = datetime.datetime(year=2020, month=1, day=1)
+    validTo = datetime.datetime(year=2020, month=12, day=31, hour=23, minute=59, second=59)
+    cost.setDualTariffEnergyCost(energyCostHigh, highWeekdays, highTarifHours[0], highTarifHours[1], energyCostLow, validFrom, validTo)
+    refund = 0.1060
+    cost.setConstantEnergyRefundPerKWh(refund=refund, validFrom=validFrom, validTo=validTo)
+    costCalculator = energycostcalculator.EnergyCostCalculator(cost)
 
     def tearDown(self):
         pass
